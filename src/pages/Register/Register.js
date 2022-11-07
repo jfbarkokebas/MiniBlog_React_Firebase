@@ -13,30 +13,41 @@ const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [error, setError] = useState('')
 
-    //my hooks:
-  const {createUser, error:authError, loading} = useAuthentication()
+  //my hooks:
+  const { createUser, error: authError, loading } = useAuthentication()
 
-  const handleSubmit =(e)=>{
+  const handleSubmit = (e) => {
     e.preventDefault()
 
     setError('')
 
-    const user ={
+    const user = {
       displayName,
       email,
       password
     }
 
-    if(password!== confirmPassword){
+    if (password !== confirmPassword) {
       setError('As senhas precisam ser iguais!')
       return
     }
 
     createUser(user)
 
+    setDisplayName('')
+    setPassword('')
+    setConfirmPassword('')
+    setEmail('')
+
     console.log(user);
-    
+
   }
+
+  useEffect(() => {
+    if (authError) {
+      setError(authError)
+    }
+  }, [authError])
 
   return (
     <div className={styles.register}>
@@ -89,9 +100,11 @@ const Register = () => {
             onChange={e => setConfirmPassword(e.target.value)} />
         </label>
 
-        <button className='btn'>Cadastrar</button>
+        {!loading && <button className='btn'>Cadastrar</button>}
+        {loading && <button className='btn' disabled>Aguarde...</button>}
 
         {error && <p className='error'>{error}</p>}
+
 
       </form>
     </div>
